@@ -79,6 +79,26 @@ pub async fn restart_layer(
 }
 
 #[tauri::command]
+pub async fn build_layer(
+    state: State<'_, AppState>,
+    layer_name: String,
+) -> Result<LayerStatus, String> {
+    let lock = state.lock().await;
+    let controller = lock
+        .as_ref()
+        .ok_or_else(|| "Stack not initialized".to_string())?;
+    let layer = controller
+        .find_layer(&layer_name)
+        .ok_or_else(|| format!("Layer '{}' not found", layer_name))?;
+
+    let layer = Arc::clone(layer);
+    drop(lock);
+
+    layer.build().await?;
+    Ok(layer.status().await)
+}
+
+#[tauri::command]
 pub async fn switch_runtime(
     state: State<'_, AppState>,
     layer_name: String,
@@ -133,6 +153,7 @@ const SAMPLE_CONFIG: &str = r#"layers:
       - name: Docker
         type: docker
         cwd: /path/to/project
+        build: docker compose build api
         up: docker compose up -d api
         down: docker compose stop api
       - name: Terminal

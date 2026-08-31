@@ -3,6 +3,7 @@ export type RuntimeState =
   | "starting"
   | "running"
   | "stopping"
+  | "building"
   | "crashed"
   | "error"
   | "unknown";
@@ -13,6 +14,7 @@ export interface RuntimeStatus {
   state: RuntimeState;
   error?: string;
   pid?: number;
+  has_build: boolean;
 }
 
 export interface LayerStatus {

@@ -63,6 +63,7 @@ pub fn run() {
             commands::start_layer,
             commands::stop_layer,
             commands::restart_layer,
+            commands::build_layer,
             commands::switch_runtime,
             commands::open_config_dir,
             commands::create_sample_config,

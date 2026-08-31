@@ -23,6 +23,10 @@ export async function restartLayer(layerName: string): Promise<LayerStatus> {
   return invoke<LayerStatus>("restart_layer", { layerName });
 }
 
+export async function buildLayer(layerName: string): Promise<LayerStatus> {
+  return invoke<LayerStatus>("build_layer", { layerName });
+}
+
 export async function switchRuntime(
   layerName: string,
   runtimeName: string

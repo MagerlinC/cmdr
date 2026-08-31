@@ -42,6 +42,7 @@ impl Layer {
                 state,
                 error,
                 pid,
+                has_build: rt.config.build.is_some(),
             });
         }
 
@@ -174,6 +175,36 @@ impl Layer {
                 *self.active_runtime.lock().await = None;
             }
         }
+
+        *self.transitioning.lock().await = false;
+        *self.transition_message.lock().await = None;
+
+        result
+    }
+
+    pub async fn build(&self) -> Result<(), String> {
+        if *self.transitioning.lock().await {
+            return Err("Layer is currently transitioning".into());
+        }
+
+        let idx = {
+            let active = self.active_runtime.lock().await;
+            active.unwrap_or(0)
+        };
+
+        let rt = &self.runtimes[idx];
+        if rt.config.build.is_none() {
+            return Err(format!(
+                "Runtime '{}' has no build command configured",
+                rt.config.name
+            ));
+        }
+
+        *self.transitioning.lock().await = true;
+        *self.transition_message.lock().await =
+            Some(format!("Building {}...", rt.config.name));
+
+        let result = rt.build().await;
 
         *self.transitioning.lock().await = false;
         *self.transition_message.lock().await = None;

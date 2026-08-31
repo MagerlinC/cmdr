@@ -349,6 +349,71 @@ impl ManagedRuntime {
         }
     }
 
+    pub async fn build(&self) -> Result<(), String> {
+        let build_cmd = self
+            .config
+            .build
+            .as_ref()
+            .ok_or_else(|| format!("Runtime '{}' has no build command", self.config.name))?;
+
+        {
+            let state = self.state.lock().await;
+            if state.is_transitioning() {
+                return Err(format!(
+                    "Runtime '{}' is already transitioning",
+                    self.config.name
+                ));
+            }
+        }
+
+        let prev_state = *self.state.lock().await;
+        *self.state.lock().await = RuntimeState::Building;
+        *self.error.lock().await = None;
+
+        let cwd = self.cwd();
+        let (program, args) = Self::parse_command(build_cmd);
+
+        log::info!(
+            "Building runtime '{}': {} (cwd: {})",
+            self.config.name,
+            build_cmd,
+            cwd.display()
+        );
+
+        let output = cmd(program)
+            .args(&args)
+            .current_dir(&cwd)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .output()
+            .await
+            .map_err(|e| {
+                let msg = format!("Failed to execute '{}': {}", build_cmd, e);
+                log::error!("{}", msg);
+                msg
+            });
+
+        match output {
+            Ok(output) if output.status.success() => {
+                *self.state.lock().await = prev_state;
+                Ok(())
+            }
+            Ok(output) => {
+                let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                let msg = format!("Build command '{}' failed: {}", build_cmd, stderr);
+                log::error!("{}", msg);
+                *self.state.lock().await = RuntimeState::Error;
+                *self.error.lock().await = Some(msg.clone());
+                Err(msg)
+            }
+            Err(msg) => {
+                *self.state.lock().await = RuntimeState::Error;
+                *self.error.lock().await = Some(msg.clone());
+                Err(msg)
+            }
+        }
+    }
+
     pub async fn get_pid(&self) -> Option<u32> {
         let child_lock = self.child.lock().await;
         child_lock.as_ref().and_then(|c| c.id())

@@ -7,6 +7,7 @@ pub enum RuntimeState {
     Starting,
     Running,
     Stopping,
+    Building,
     Crashed,
     Error,
     Unknown,
@@ -18,7 +19,10 @@ impl RuntimeState {
     }
 
     pub fn is_transitioning(self) -> bool {
-        matches!(self, RuntimeState::Starting | RuntimeState::Stopping)
+        matches!(
+            self,
+            RuntimeState::Starting | RuntimeState::Stopping | RuntimeState::Building
+        )
     }
 }
 
@@ -31,6 +35,7 @@ pub struct RuntimeStatus {
     pub error: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pid: Option<u32>,
+    pub has_build: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -19,6 +19,8 @@ pub struct RuntimeConfig {
     pub runtime_type: String,
     #[serde(default)]
     pub cwd: Option<String>,
+    #[serde(default)]
+    pub build: Option<String>,
     pub up: String,
     #[serde(default)]
     pub down: Option<String>,

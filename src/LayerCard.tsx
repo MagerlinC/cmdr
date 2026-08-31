@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { startLayer, stopLayer, restartLayer, switchRuntime } from "./api";
+import { startLayer, stopLayer, restartLayer, buildLayer, switchRuntime } from "./api";
 import type { LayerStatus, RuntimeState } from "./types";
 
 interface Props {
@@ -17,6 +17,7 @@ function stateColor(state: RuntimeState): string {
       return "var(--green)";
     case "starting":
     case "stopping":
+    case "building":
       return "var(--yellow)";
     case "crashed":
     case "error":
@@ -78,10 +79,15 @@ export function LayerCard({ layer, index, selected, onUpdate, onMoveUp, onMoveDo
     await handleAction(() => restartLayer(layer.name));
   }
 
+  async function handleBuild() {
+    await handleAction(() => buildLayer(layer.name));
+  }
+
   async function handleSwitch(runtimeName: string) {
     await handleAction(() => switchRuntime(layer.name, runtimeName));
   }
 
+  const hasBuild = layer.runtimes.some((r) => r.has_build);
   const isMultiRuntime = layer.runtimes.length > 1;
   const showNumber = index < 9;
 
@@ -157,6 +163,12 @@ export function LayerCard({ layer, index, selected, onUpdate, onMoveUp, onMoveDo
           <button className="btn" disabled={disabled} onClick={handleRestart}>
             {selected && <span className="key-hint">[r]</span>}
             Restart
+          </button>
+        )}
+        {hasBuild && (
+          <button className="btn" disabled={disabled} onClick={handleBuild}>
+            {selected && <span className="key-hint">[b]</span>}
+            Build
           </button>
         )}
         {!isStopped && (

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { startLayer, stopLayer, restartLayer, switchRuntime } from "./api";
+import { startLayer, stopLayer, restartLayer, buildLayer, switchRuntime } from "./api";
 import type { LayerStatus, RuntimeState } from "./types";
 
 function activeState(layer: LayerStatus): RuntimeState {
@@ -72,6 +72,13 @@ export function useKeyboardShortcuts(
         } else {
           handleAction(() => stopLayer(layer.name));
         }
+        setSelectedIndex(null);
+        return;
+      }
+
+      const hasBuild = layer.runtimes.some((r) => r.has_build);
+      if (e.key === "b" && hasBuild) {
+        handleAction(() => buildLayer(layer.name));
         setSelectedIndex(null);
         return;
       }
