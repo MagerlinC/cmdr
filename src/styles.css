@@ -1,14 +1,14 @@
 :root {
-  --bg: #1a1a2e;
-  --surface: #16213e;
-  --border: #2a2a4a;
-  --text: #e0e0e0;
-  --muted: #6b7280;
-  --green: #22c55e;
-  --yellow: #eab308;
-  --red: #ef4444;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
+  --bg: #1e1e2e;
+  --surface: #313244;
+  --border: #45475a;
+  --text: #cdd6f4;
+  --muted: #a6adc8;
+  --green: #a6e3a1;
+  --yellow: #f9e2af;
+  --red: #f38ba8;
+  --accent: #89b4fa;
+  --accent-hover: #74c7ec;
 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
     sans-serif;
@@ -23,9 +23,15 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
+  background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 20h40M20 0v40' stroke='%23cdd6f4' stroke-width='0.5' opacity='0.04'/%3E%3C/svg%3E");
 }
 
 .container {
@@ -75,7 +81,7 @@ body {
 
 .header-actions {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .layer-card {
@@ -179,7 +185,7 @@ body {
 }
 
 .btn-stop:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(243, 139, 168, 0.1);
 }
 
 .runtime-toggle {
@@ -215,7 +221,7 @@ body {
 
 .runtime-active {
   background: var(--accent);
-  color: white;
+  color: var(--bg);
 }
 
 .runtime-active:disabled {
@@ -290,7 +296,7 @@ code {
 
 .layer-card-selected .key-badge {
   background: var(--accent);
-  color: white;
+  color: var(--bg);
 }
 
 .key-hint {

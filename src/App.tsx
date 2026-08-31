@@ -148,10 +148,10 @@ export function App() {
         <h1 className="title"><img src={logoSvg} alt="" className="logo" />cmdr</h1>
         <div className="header-actions">
           <button className="config-btn" onClick={handleReload} title="Reload configuration">
-            Reload
+            Reload config
           </button>
           <button className="config-btn" onClick={openConfigDir} title="Open config folder">
-            Config
+            Open config
           </button>
         </div>
       </div>
