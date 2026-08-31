@@ -1,6 +1,9 @@
 # cmdr
 
-Local development stack control plane. Define layers (Database, API, Frontend, etc.) with one or more runtimes each, and toggle between them.
+Cmdr is a local development control plane which makes it easier to run various services on your machine, and especially to swap between predefined sets of configurations called layers.
+
+Define layers (Database, API, Frontend, etc.) with one or more runtimes in each, and toggle between the various runtime variants.
+<img width="497" height="630" alt="image" src="https://github.com/user-attachments/assets/19515b68-f34b-4279-8630-f85d4e3d5234" />
 
 ## Build & Install
 
