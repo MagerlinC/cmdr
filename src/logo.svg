@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Shield / chevron body -->
+  <path d="M32 4L8 16v20c0 12 10 20 24 24 14-4 24-12 24-24V16L32 4z" fill="#3b82f6" opacity="0.15"/>
+  <path d="M32 4L8 16v20c0 12 10 20 24 24 14-4 24-12 24-24V16L32 4z" stroke="#3b82f6" stroke-width="2.5" fill="none"/>
+
+  <!-- Three horizontal layer bars -->
+  <rect x="20" y="22" width="24" height="4" rx="1.5" fill="#3b82f6"/>
+  <rect x="20" y="30" width="24" height="4" rx="1.5" fill="#3b82f6" opacity="0.65"/>
+  <rect x="20" y="38" width="24" height="4" rx="1.5" fill="#3b82f6" opacity="0.35"/>
+
+  <!-- Status dots on left of bars -->
+  <circle cx="17" cy="24" r="2" fill="#22c55e"/>
+  <circle cx="17" cy="32" r="2" fill="#22c55e"/>
+  <circle cx="17" cy="40" r="2" fill="#6b7280"/>
+</svg>

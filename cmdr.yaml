@@ -1,0 +1,34 @@
+layers:
+  - name: Database
+    runtimes:
+      - name: Docker
+        type: docker
+        cwd: .
+        up: docker compose up -d postgres
+        down: docker compose stop postgres
+
+  - name: API
+    runtimes:
+      - name: Docker
+        type: docker
+        cwd: .
+        up: docker compose up -d api
+        down: docker compose stop api
+
+      - name: Local
+        type: local
+        cwd: ./api
+        up: pnpm dev
+
+  - name: Frontend
+    runtimes:
+      - name: Docker
+        type: docker
+        cwd: .
+        up: docker compose up -d frontend
+        down: docker compose stop frontend
+
+      - name: Local
+        type: local
+        cwd: ./frontend
+        up: pnpm dev
