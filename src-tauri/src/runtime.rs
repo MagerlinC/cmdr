@@ -97,8 +97,8 @@ impl ManagedRuntime {
                 *self.state.lock().await = RuntimeState::Running;
                 Ok(())
             }
-            "local" => {
-                // Local commands are long-running processes we need to track
+            "terminal" => {
+                // Terminal commands are long-running processes we need to track
                 let child = cmd(program)
                     .args(&args)
                     .current_dir(&cwd)
@@ -113,7 +113,7 @@ impl ManagedRuntime {
                     })?;
 
                 log::info!(
-                    "Spawned local process for '{}', pid: {:?}",
+                    "Spawned terminal process for '{}', pid: {:?}",
                     self.config.name,
                     child.id()
                 );
@@ -174,7 +174,7 @@ impl ManagedRuntime {
                 *self.state.lock().await = RuntimeState::Stopped;
                 Ok(())
             }
-            "local" => {
+            "terminal" => {
                 let mut child_lock = self.child.lock().await;
 
                 if let Some(ref mut child) = *child_lock {
@@ -255,8 +255,8 @@ impl ManagedRuntime {
             "docker" => {
                 self.check_docker_state().await
             }
-            "local" => {
-                self.check_local_state().await
+            "terminal" => {
+                self.check_terminal_state().await
             }
             _ => RuntimeState::Unknown,
         }
@@ -325,7 +325,7 @@ impl ManagedRuntime {
         }
     }
 
-    async fn check_local_state(&self) -> RuntimeState {
+    async fn check_terminal_state(&self) -> RuntimeState {
         let child_lock = self.child.lock().await;
         match &*child_lock {
             Some(child) => {

@@ -3,6 +3,7 @@ import { getLayers, openConfigDir, createSampleConfig, reloadConfig } from "./ap
 import { LayerCard } from "./LayerCard";
 import type { LayerStatus } from "./types";
 import logoSvg from "./logo.svg";
+import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 
 const ORDER_KEY = "cmdr-layer-order";
 
@@ -100,6 +101,9 @@ export function App() {
     [layers, order]
   );
 
+  const ordered = applyOrder(layers, order);
+  const { selectedIndex } = useKeyboardShortcuts(ordered, handleLayerUpdate);
+
   if (loading) {
     return (
       <div className="loader">
@@ -151,18 +155,17 @@ export function App() {
           </button>
         </div>
       </div>
-      {(() => {
-        const ordered = applyOrder(layers, order);
-        return ordered.map((layer, idx) => (
-          <LayerCard
-            key={layer.name}
-            layer={layer}
-            onUpdate={handleLayerUpdate}
-            onMoveUp={idx > 0 ? () => handleMove(layer.name, "up") : undefined}
-            onMoveDown={idx < ordered.length - 1 ? () => handleMove(layer.name, "down") : undefined}
-          />
-        ));
-      })()}
+      {ordered.map((layer, idx) => (
+        <LayerCard
+          key={layer.name}
+          layer={layer}
+          index={idx}
+          selected={idx === selectedIndex}
+          onUpdate={handleLayerUpdate}
+          onMoveUp={idx > 0 ? () => handleMove(layer.name, "up") : undefined}
+          onMoveDown={idx < ordered.length - 1 ? () => handleMove(layer.name, "down") : undefined}
+        />
+      ))}
     </div>
   );
 }

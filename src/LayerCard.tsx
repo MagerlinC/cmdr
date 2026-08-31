@@ -4,6 +4,8 @@ import type { LayerStatus, RuntimeState } from "./types";
 
 interface Props {
   layer: LayerStatus;
+  index: number;
+  selected: boolean;
   onUpdate: (layer: LayerStatus) => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
@@ -42,11 +44,10 @@ function activeState(layer: LayerStatus): RuntimeState {
   return "stopped";
 }
 
-export function LayerCard({ layer, onUpdate, onMoveUp, onMoveDown }: Props) {
+export function LayerCard({ layer, index, selected, onUpdate, onMoveUp, onMoveDown }: Props) {
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const isMultiRuntime = layer.runtimes.length > 1;
   const state = activeState(layer);
   const isRunning = state === "running";
   const isStopped = state === "stopped" || state === "unknown";
@@ -81,10 +82,16 @@ export function LayerCard({ layer, onUpdate, onMoveUp, onMoveDown }: Props) {
     await handleAction(() => switchRuntime(layer.name, runtimeName));
   }
 
+  const isMultiRuntime = layer.runtimes.length > 1;
+  const showNumber = index < 9;
+
   return (
-    <div className="layer-card">
+    <div className={`layer-card${selected ? " layer-card-selected" : ""}`}>
       <div className="layer-header">
-        <span className="layer-name">{layer.name}</span>
+        <span className="layer-name">
+          {showNumber && <span className="key-badge">{index + 1}</span>}
+          {layer.name}
+        </span>
         <div className="reorder-btns">
           <button
             className="reorder-btn"
@@ -109,6 +116,7 @@ export function LayerCard({ layer, onUpdate, onMoveUp, onMoveDown }: Props) {
         <RuntimeToggle
           layer={layer}
           disabled={disabled}
+          selected={selected}
           onSwitch={handleSwitch}
           onStart={handleStart}
         />
@@ -141,11 +149,13 @@ export function LayerCard({ layer, onUpdate, onMoveUp, onMoveDown }: Props) {
             disabled={disabled}
             onClick={() => handleStart()}
           >
+            {selected && <span className="key-hint">[s]</span>}
             Start
           </button>
         )}
         {isRunning && (
           <button className="btn" disabled={disabled} onClick={handleRestart}>
+            {selected && <span className="key-hint">[r]</span>}
             Restart
           </button>
         )}
@@ -155,6 +165,7 @@ export function LayerCard({ layer, onUpdate, onMoveUp, onMoveDown }: Props) {
             disabled={disabled}
             onClick={handleStop}
           >
+            {selected && <span className="key-hint">[s]</span>}
             Stop
           </button>
         )}
@@ -166,11 +177,13 @@ export function LayerCard({ layer, onUpdate, onMoveUp, onMoveDown }: Props) {
 function RuntimeToggle({
   layer,
   disabled,
+  selected,
   onSwitch,
   onStart,
 }: {
   layer: LayerStatus;
   disabled: boolean;
+  selected: boolean;
   onSwitch: (name: string) => void;
   onStart: (name: string) => void;
 }) {
@@ -183,6 +196,7 @@ function RuntimeToggle({
 
   return (
     <div className="runtime-toggle">
+      {selected && <span className="key-hint key-hint-toggle">[tab]</span>}
       {runtimes.map((rt, idx) => {
         const isActive = idx === activeIdx;
         return (

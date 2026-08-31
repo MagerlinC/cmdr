@@ -135,8 +135,8 @@ const SAMPLE_CONFIG: &str = r#"layers:
         cwd: /path/to/project
         up: docker compose up -d api
         down: docker compose stop api
-      - name: Local
-        type: local
+      - name: Terminal
+        type: terminal
         cwd: /path/to/project/api
         up: pnpm dev
 
@@ -147,8 +147,8 @@ const SAMPLE_CONFIG: &str = r#"layers:
         cwd: /path/to/project
         up: docker compose up -d frontend
         down: docker compose stop frontend
-      - name: Local
-        type: local
+      - name: Terminal
+        type: terminal
         cwd: /path/to/project/frontend
         up: pnpm dev
 "#;

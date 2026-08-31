@@ -38,8 +38,8 @@ layers:
         cwd: /path/to/project
         up: docker compose up -d api
         down: docker compose stop api
-      - name: Local
-        type: local
+      - name: Terminal
+        type: terminal
         cwd: /path/to/project/api
         up: pnpm dev
 ```

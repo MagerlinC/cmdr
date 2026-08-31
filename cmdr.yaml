@@ -15,8 +15,8 @@ layers:
         up: docker compose up -d api
         down: docker compose stop api
 
-      - name: Local
-        type: local
+      - name: Terminal
+        type: terminal
         cwd: ./api
         up: pnpm dev
 
@@ -28,7 +28,7 @@ layers:
         up: docker compose up -d frontend
         down: docker compose stop frontend
 
-      - name: Local
-        type: local
+      - name: Terminal
+        type: terminal
         cwd: ./frontend
         up: pnpm dev
