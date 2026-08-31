@@ -152,6 +152,10 @@ body {
   color: var(--muted);
 }
 
+.build-timer {
+  font-variant-numeric: tabular-nums;
+}
+
 .layer-actions {
   display: flex;
   gap: 8px;

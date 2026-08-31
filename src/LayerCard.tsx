@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { startLayer, stopLayer, restartLayer, buildLayer, switchRuntime } from "./api";
 import type { LayerStatus, RuntimeState } from "./types";
 
@@ -87,6 +87,20 @@ export function LayerCard({ layer, index, selected, onUpdate, onMoveUp, onMoveDo
     await handleAction(() => switchRuntime(layer.name, runtimeName));
   }
 
+  const isBuilding = state === "building";
+  const [elapsed, setElapsed] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
+
+  useEffect(() => {
+    if (isBuilding) {
+      setElapsed(0);
+      timerRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    } else {
+      clearInterval(timerRef.current);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [isBuilding]);
+
   const hasBuild = layer.runtimes.some((r) => r.has_build);
   const isMultiRuntime = layer.runtimes.length > 1;
   const showNumber = index < 9;
@@ -135,6 +149,7 @@ export function LayerCard({ layer, index, selected, onUpdate, onMoveUp, onMoveDo
         />
         <span className="status-label">
           {layer.transition_message ?? stateLabel(state)}
+          {isBuilding && <span className="build-timer"> ({elapsed}s)</span>}
         </span>
       </div>
 
